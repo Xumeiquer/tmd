@@ -30,7 +30,7 @@ type Log struct {
 }
 
 const (
-	defaultCachePath = ".tdlib"
+	defaultCachePath = "./.tdlib"
 
 	apiIdNotDefined    = "API ID is not defined"
 	apiHashNotDefined  = "API Hash is not defined"

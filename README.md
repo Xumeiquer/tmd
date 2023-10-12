@@ -90,6 +90,7 @@ The `list` commands are intended to search among your chats, channels, forums, e
 
 If you want to list all your chats, execute:
 
+`docker run --rm -it -e TMD_TDLIB_API_ID=$TMD_TDLIB_API_ID -e TMD_TDLIB_API_HASH=$TMD_TDLIB_API_HASH -v ${PWD}/tdlib:/.tdlib -v ${PWD}/media:/media ghcr.io/xumeiquer/tmd:latest list`
 
 ## Roadmap
 
