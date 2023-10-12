@@ -1,0 +1,39 @@
+tdlib:
+  api:
+    id: 
+    hash: 
+  cache:
+    database: ./tdlib/database
+    file: ./tdlib/file
+  database:
+    secret: 
+  log:
+    to: 
+    level: 0
+tmd:
+  log:
+    to: stdout
+    level: 1000
+    type: json
+  cmds:
+    filters:
+      date: 
+      regex: 
+      text: 
+    list:
+    list-topics:
+      channel:
+    list-media:
+      chat:
+      topic:
+      message:
+    download:
+      store-path: ./media
+      show-progress: false
+    download-message:
+      message:
+    download-file:
+      chat:
+      file:
+    download-chat:
+      chat:
