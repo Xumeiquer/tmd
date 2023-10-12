@@ -17,6 +17,7 @@ WORKDIR /tmd
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
+COPY .git .
 
 RUN bash build.sh
 

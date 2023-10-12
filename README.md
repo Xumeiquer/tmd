@@ -42,7 +42,7 @@ Telegram Media Downloader can be considered a lightweight Telegram client which 
 
 ## Built With
 
-This project is build using [zelenin](https://github.com/zelenin/go-tdlib) wrapper for the [Telegram Database Library](https://github.com/tdlib/td).
+This project is build using [zelenin](https://github.com/zelenin/go-tdlib) which is a [Go](https://go.dev) wrapper for the [Telegram Database Library](https://github.com/tdlib/td).
 
 ## Getting Started
 
