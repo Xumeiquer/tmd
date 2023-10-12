@@ -10,7 +10,7 @@ COPY --from=tdlib /usr/lib/libssl.a /usr/local/lib/libssl.a
 COPY --from=tdlib /usr/lib/libcrypto.a /usr/local/lib/libcrypto.a
 COPY --from=tdlib /lib/libz.a /usr/local/lib/libz.a
 
-RUN apk add build-base bash
+RUN apk add build-base bash git
 
 WORKDIR /tmd
 
