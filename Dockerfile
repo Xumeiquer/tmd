@@ -23,6 +23,6 @@ RUN bash build.sh
 # Final image
 FROM gcr.io/distroless/base:latest
 
-COPY --from=golang /tmp/build/tmd /tmd
+COPY --from=golang /tmd/build/tmd /tmd
 
 ENTRYPOINT [ "/tmd" ]
