@@ -1,7 +1,7 @@
 <br/>
 <p align="center">
   <a href="https://github.com/Xumeiquer/tmd">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="assets/images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Telegram Media Downloader</h3>
@@ -36,7 +36,7 @@
 
 ## About The Project
 
-![Screen Shot](images/screenshot.png)
+![Screen Shot](assets/images/download_message.png)
 
 Telegram Media Downloader can be considered a lightweight Telegram client which allows you to download media files from the Telegram cloud.
 
@@ -92,6 +92,20 @@ If you want to list all your chats, execute:
 
 `docker run --rm -it -e TMD_TDLIB_API_ID=$TMD_TDLIB_API_ID -e TMD_TDLIB_API_HASH=$TMD_TDLIB_API_HASH -v ${PWD}/tdlib:/.tdlib -v ${PWD}/media:/media ghcr.io/xumeiquer/tmd:latest list`
 
+![List command](assets/images/list_command.png)
+
+If you want to see what media there are in a specific channel, execute:
+
+`docker run --rm -it -e TMD_TDLIB_API_ID=$TMD_TDLIB_API_ID -e TMD_TDLIB_API_HASH=$TMD_TDLIB_API_HASH -v ${PWD}/tdlib:/.tdlib -v ${PWD}/media:/media ghcr.io/xumeiquer/tmd:latest list media --chat <char_id>`
+
+![List media command](assets/images/list_media_command.png)
+
+If you want to filter the output, you can use the `filter`flags as following:
+
+`docker run --rm -it -e TMD_TDLIB_API_ID=$TMD_TDLIB_API_ID -e TMD_TDLIB_API_HASH=$TMD_TDLIB_API_HASH -v ${PWD}/tdlib:/.tdlib -v ${PWD}/media:/media ghcr.io/xumeiquer/tmd:latest list media --chat -1001986525478 --filter-re ".*\.rar"`
+
+![List media command with filter](assets/images/list_media_command_with_filter.png)
+
 ## Roadmap
 
 See the [open issues](https://github.com/Xumeiquer/tmd/issues) for a list of proposed features (and known issues).
@@ -119,9 +133,3 @@ Distributed under the MIT License. See [LICENSE](https://github.com/Xumeiquer/tm
 ## Authors
 
 * **Xumeiquer** - ** - [Xumeiquer](https://github.com/Xumeiquer) - **
-
-## Acknowledgements
-
-* []()
-* []()
-* []()
