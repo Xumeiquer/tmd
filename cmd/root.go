@@ -39,7 +39,7 @@ var rootCmd = &cobra.Command{
 	Use:     "tmd",
 	Version: Version,
 	Short:   "Telegram Media Downloader.",
-	Long: `Download Telegram media from Users, Chats, or Channels.
+	Long: `Download Telegram media from Users, Chats, Channels, or Forums.
 
 Telegram Media Downloader allow users to download media content from Telegram cloud 
 without manually interacting with the Telegram client. Telegram Media Downloader is

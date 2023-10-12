@@ -2,6 +2,7 @@ package tclient
 
 import (
 	"errors"
+	"path/filepath"
 
 	"github.com/spf13/viper"
 )
@@ -29,6 +30,8 @@ type Log struct {
 }
 
 const (
+	defaultCachePath = ".tdlib"
+
 	apiIdNotDefined    = "API ID is not defined"
 	apiHashNotDefined  = "API Hash is not defined"
 	tdlibLogWrongLevel = "TDLIB log level must be between 0 and 1023"
@@ -67,6 +70,13 @@ func InitConfig() (*Config, error) {
 	}
 	if config.Log.Level < 0 || config.Log.Level > 1023 {
 		return nil, ErrTDLIBLogLevel
+	}
+
+	if config.Cache.Database == "" {
+		config.Cache.Database = filepath.Join(defaultCachePath, "database")
+	}
+	if config.Cache.File == "" {
+		config.Cache.File = filepath.Join(defaultCachePath, "files")
 	}
 
 	return config, err
