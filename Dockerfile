@@ -15,11 +15,7 @@ RUN apk add build-base bash git
 WORKDIR /tmd
 
 RUN git clone https://github.com/Xumeiquer/tmd.git .
-
-# COPY go.mod go.sum ./
 RUN go mod download
-# COPY . .
-# COPY .git .
 
 RUN bash build.sh
 
