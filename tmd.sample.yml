@@ -1,0 +1,15 @@
+tdlib:
+  path:
+  api:
+    id:
+    hash:
+  files:
+    path:
+  database:
+    path:
+    secret:
+  log:
+    to:
+    level:
+
+
