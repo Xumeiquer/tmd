@@ -66,6 +66,8 @@ func initConfig() {
 	} else {
 		viper.SetConfigName(tmdConfigFileName)
 		viper.SetConfigType("yaml")
+		viper.AddConfigPath("/etc/tmd")
+		viper.AddConfigPath("$HOME/.tmd")
 		viper.AddConfigPath(".")
 
 		switch runtime.GOOS {

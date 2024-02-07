@@ -10,7 +10,7 @@ COPY --from=tdlib /usr/lib/libssl.a /usr/local/lib/libssl.a
 COPY --from=tdlib /usr/lib/libcrypto.a /usr/local/lib/libcrypto.a
 COPY --from=tdlib /lib/libz.a /usr/local/lib/libz.a
 
-RUN apk add build-base bash git
+RUN apk add build-base bash git pkgconfig
 
 WORKDIR /tmd
 
@@ -23,5 +23,7 @@ RUN bash build.sh
 FROM gcr.io/distroless/base:latest
 
 COPY --from=golang /tmd/build/tmd /usr/bin/tmd
+
+WORKDIR /
 
 ENTRYPOINT [ "/usr/bin/tmd"]
