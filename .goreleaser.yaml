@@ -3,11 +3,18 @@
 
 version: 1
 
+project_name: tmd
+
+git:
+  tag_sort: semver
+
 before:
   hooks:
     - go mod tidy
 
 builds:
+  main: ./main.go
+  binary: tmd
   - env:
       - CGO_ENABLED=1
     goos:
