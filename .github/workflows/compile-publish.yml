@@ -1,0 +1,45 @@
+name: Compile & Publush
+
+on:
+  push:
+    branches:
+      - 'main'
+
+env:
+  TDLIB_VERSION: v1.8.0
+
+jobs:
+  compile:
+    name: Compile TMD
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Prepare TDLIB for Cross-Copilation
+        uses: addnab/docker-run-action@v3
+        with:
+          image: debian:latest
+          options: -v ${{ github.workspace }}/tdlib:/usr/src/tdlib
+          run: |
+              apt update
+              apt install -y make git zlib1g-dev libssl-dev gperf php-cli cmake g++
+              git clone https://github.com/tdlib/td.git /usr/src/tdlib/td
+              git checkout $TDLIB_VERSION
+              mkdir -p /usr/src/tdlib/td/build-native
+              cd /usr/src/tdlib/td/build-native
+              cmake -DCMAKE_BUILD_TYPE=Release ..
+              cmake --build . --target prepare_cross_compiling
+          env:
+            DEBIAN_FRONTEND=noninteractive
+      
+      - name: Prepare Cross-Compilation toolschains
+        run: |
+            declare -a targets=("windows-static-x64" "linux-x64-clang")
+          
+            for target in "${targets[@]}"; do
+              docker run --rm dockcross/${target} > /usr/local/bin/dockcross-${target}
+              chmod +x /usr/local/bin/dockcross-${target}
+              /usr/local/bin/dockcross-${target} -a "-v ${{ github.workspace }}/tdlib:/usr/src/tdlib/td -v ${{ github.workspace }}/tdlib/${target}:/opt/tdlib/${target}" bash -c "cd usr/src/tdlib/td && rm -rf build && mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/opt/tdlib/${target} .. && gosu root cmake --build . --target install"
+            done
+
