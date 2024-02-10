@@ -24,7 +24,9 @@ jobs:
           run: |
               apt update
               apt install -y make git zlib1g-dev libssl-dev gperf php-cli cmake g++
+              mkdir -p /usr/src/tdlib/
               git clone https://github.com/tdlib/td.git /usr/src/tdlib/td
+              cd /usr/src/tdlib/td
               git checkout $TDLIB_VERSION
               mkdir -p /usr/src/tdlib/td/build-native
               cd /usr/src/tdlib/td/build-native
