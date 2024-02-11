@@ -28,9 +28,9 @@ jobs:
               mkdir -p /usr/src/tdlib/
               git clone https://github.com/tdlib/td.git /usr/src/tdlib/td
               cd /usr/src/tdlib/td
-              git checkout $TDLIB_VERSION
+              git checkout ${{env.TDLIB_VERSION}}
               mkdir -p /usr/src/tdlib/td/build-native
-              TMD_TARGETS=${{TARGETS}}
+              TMD_TARGETS=${{env.TARGETS}}
               for qtarget in ${TMD_TARGETS//,/ }; do
                 target=$(sed -e 's/^"//' -e 's/"$//' <<<"$qtarget")
                 mkdir -p /usr/src/tdlib/td/build-${target}
@@ -44,7 +44,7 @@ jobs:
 
       - name: Prepare Cross-Compilation toolschains
         run: |
-            TMD_TARGETS=${{TARGETS}}
+            TMD_TARGETS=${{env.TARGETS}}
             for qtarget in ${TMD_TARGETS//,/ }; do
               target=$(sed -e 's/^"//' -e 's/"$//' <<<"$qtarget")
               docker run --rm dockcross/${target} > /usr/local/bin/dockcross-${target}
