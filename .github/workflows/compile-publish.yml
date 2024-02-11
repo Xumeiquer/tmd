@@ -30,7 +30,7 @@ jobs:
               cd /usr/src/tdlib/td
               git checkout $TDLIB_VERSION
               mkdir -p /usr/src/tdlib/td/build-native
-              for target in "${env.TMD_TARGETS[@]}": do
+              for target in "${env.TMD_TARGETS[@]}"; do
                 mkdir -p /usr/src/tdlib/td/build-${target}
                 chmod 777 /usr/src/tdlib/td/build-${target}
               done
