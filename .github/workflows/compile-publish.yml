@@ -30,8 +30,7 @@ jobs:
               cd /usr/src/tdlib/td
               git checkout ${{env.TDLIB_VERSION}}
               mkdir -p /usr/src/tdlib/td/build-native
-              TMD_TARGETS=${{env.TARGETS}}
-              for qtarget in ${TMD_TARGETS//,/ }; do
+              for qtarget in ${${{env.TARGETS}}//,/ }; do
                 target=$(echo "$qtarget" | sed -e 's/^"//' -e 's/"$//')
                 mkdir -p /usr/src/tdlib/td/build-${target}
                 chmod 777 /usr/src/tdlib/td/build-${target}
