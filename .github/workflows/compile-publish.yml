@@ -6,11 +6,7 @@ on:
       - 'main'
 
 env:
-  TMD_TARGETS: |
-    (
-      "windows-static-x64"
-      "linux-x64-clang"
-    )
+  TMD_TARGETS: ["windows-static-x64", "linux-x64-clang"]
   TDLIB_VERSION: v1.8.0
 
 jobs:
@@ -34,8 +30,7 @@ jobs:
               cd /usr/src/tdlib/td
               git checkout $TDLIB_VERSION
               mkdir -p /usr/src/tdlib/td/build-native
-              targets=${{env.TMD_TARGETS}}
-              for target in "${targets[@]}"; do
+              for target in "${TMD_TARGETS[@]}"; do
                 mkdir -p /usr/src/tdlib/td/build-${target}
                 chmod 777 /usr/src/tdlib/td/build-${target}
               done
@@ -44,15 +39,15 @@ jobs:
               cmake --build . --target prepare_cross_compiling
           env:
             DEBIAN_FRONTEND=noninteractive
+            TMD_TARGETS=${{fromJSON(env.TMD_TARGETS)}}
       
       - name: Prepare Cross-Compilation toolschains
         run: |          
-            targets=${{env.TMD_TARGETS}}
-            for target in "${targets[@]}"; do
+            for target in "${TMD_TARGETS[@]}"; do
               docker run --rm dockcross/${target} > /usr/local/bin/dockcross-${target}
               chmod +x /usr/local/bin/dockcross-${target}
               /usr/local/bin/dockcross-${target} -a "-v ${{ github.workspace }}/tdlib:/usr/src/tdlib/td -v ${{ github.workspace }}/tdlib/${target}:/opt/tdlib/${target}" bash -c "cd /usr/src/tdlib/td/build-${target} && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/opt/tdlib/${target} .. && cmake --build . --target install"
             done
         env:
-          TMD_TARGETS=${{env.TMD_TARGETS}}
+          TMD_TARGETS=${{fromJSON(env.TMD_TARGETS)}}
 
