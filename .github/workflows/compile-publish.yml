@@ -6,7 +6,7 @@ on:
       - 'main'
 
 env:
-  TARGETS: '["windows-static-x64","linux-x64-clang"]'
+  TARGETS: '"windows-static-x64","linux-x64-clang"'
   TDLIB_VERSION: v1.8.0
 
 jobs:
@@ -24,13 +24,14 @@ jobs:
           options: -v ${{ github.workspace }}/tdlib:/usr/src/tdlib
           run: | 
               apt update
-              apt install -y make git zlib1g-dev libssl-dev gperf php-cli cmake g++ jq
+              apt install -y make git zlib1g-dev libssl-dev gperf php-cli cmake g++
               mkdir -p /usr/src/tdlib/
               git clone https://github.com/tdlib/td.git /usr/src/tdlib/td
               cd /usr/src/tdlib/td
               git checkout $TDLIB_VERSION
               mkdir -p /usr/src/tdlib/td/build-native
-              for target in "${TMD_TARGETS[@]}"; do
+              for qtarget in ${TMD_TARGETS//,/ }; do
+                target=$(sed -e 's/^"//' -e 's/"$//' <<<"$qtarget")
                 mkdir -p /usr/src/tdlib/td/build-${target}
                 chmod 777 /usr/src/tdlib/td/build-${target}
               done
@@ -40,16 +41,17 @@ jobs:
           env:
             DEBIAN_FRONTEND=noninteractive
             TDLIB_VERSION=${{env.TDLIB_VERSION}}
-            TMD_TARGETS=($(echo ${{env.TARGETS}} | jq -r '.[]'))
+            TMD_TARGETS=${{env.TARGETS}}
 
       - name: Prepare Cross-Compilation toolschains
         run: |
             apt update && apt install -y jq
-            for target in "${TMD_TARGETS[@]}"; do
+            for qtarget in ${TMD_TARGETS//,/ }; do
+              target=$(sed -e 's/^"//' -e 's/"$//' <<<"$qtarget")
               docker run --rm dockcross/${target} > /usr/local/bin/dockcross-${target}
               chmod +x /usr/local/bin/dockcross-${target}
               /usr/local/bin/dockcross-${target} -a "-v ${{ github.workspace }}/tdlib:/usr/src/tdlib/td -v ${{ github.workspace }}/tdlib/${target}:/opt/tdlib/${target}" bash -c "cd /usr/src/tdlib/td/build-${target} && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/opt/tdlib/${target} .. && cmake --build . --target install"
             done
         env:
-          TMD_TARGETS=($(echo ${{env.TARGETS}} | jq -r '.[]'))
+          TMD_TARGETS=${{env.TARGETS}}
 
