@@ -6,7 +6,6 @@ on:
       - 'main'
 
 env:
-  TARGETS: ("windows-static-x64", "linux-x64-clang")
   TDLIB_VERSION: v1.8.0
 
 jobs:
@@ -22,7 +21,7 @@ jobs:
         with:
           image: debian:latest
           options: -v ${{ github.workspace }}/tdlib:/usr/src/tdlib
-          run: |
+          run: | 
               apt update
               apt install -y make git zlib1g-dev libssl-dev gperf php-cli cmake g++
               mkdir -p /usr/src/tdlib/
@@ -30,7 +29,7 @@ jobs:
               cd /usr/src/tdlib/td
               git checkout $TDLIB_VERSION
               mkdir -p /usr/src/tdlib/td/build-native
-              TMD_TARGETS=(${{fromJSON(env.TARGETS)}})
+              declare -a TMD_TARGETS=("windows-static-x64", "linux-x64-clang")
               for target in "${TMD_TARGETS[@]}"; do
                 mkdir -p /usr/src/tdlib/td/build-${target}
                 chmod 777 /usr/src/tdlib/td/build-${target}
@@ -43,7 +42,7 @@ jobs:
 
       - name: Prepare Cross-Compilation toolschains
         run: |
-            TMD_TARGETS=(${{fromJSON(env.TARGETS)}})
+            declare -a TMD_TARGETS=("windows-static-x64", "linux-x64-clang")
             for target in "${TMD_TARGETS[@]}"; do
               docker run --rm dockcross/${target} > /usr/local/bin/dockcross-${target}
               chmod +x /usr/local/bin/dockcross-${target}
