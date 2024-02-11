@@ -6,7 +6,7 @@ on:
       - 'main'
 
 env:
-  TARGETS: "'\"windows-static-x64\",\"linux-x64-clang\"'"
+  TARGETS: "\"windows-static-x64\",\"linux-x64-clang\""
   TDLIB_VERSION: v1.8.0
 
 jobs:
