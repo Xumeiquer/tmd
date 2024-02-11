@@ -16,6 +16,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      
+      - name: Make the scripts files executable
+        run: chmod +x ${{ github.workspace }}/.github/scripts/prepare-tdlib.sh
 
       - name: Prepare TDLIB for Cross-Copilation
         uses: addnab/docker-run-action@v3
@@ -23,8 +26,7 @@ jobs:
           image: debian:latest
           options: -v ${{ github.workspace }}/tdlib:/usr/src/tdlib
           shell: bash
-          run: |
-            bash .github/scripts/prepare-tdlib.sh
+          run: ${{ github.workspace }}/.github/scripts/prepare-tdlib.sh
 
       - name: Prepare Cross-Compilation toolschains
         run: |
