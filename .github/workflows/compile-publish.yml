@@ -30,6 +30,7 @@ jobs:
               cd /usr/src/tdlib/td
               git checkout $TDLIB_VERSION
               mkdir -p /usr/src/tdlib/td/build-native
+              TMD_TARGETS=${{TARGETS}}
               for qtarget in ${TMD_TARGETS//,/ }; do
                 target=$(sed -e 's/^"//' -e 's/"$//' <<<"$qtarget")
                 mkdir -p /usr/src/tdlib/td/build-${target}
@@ -40,18 +41,14 @@ jobs:
               cmake --build . --target prepare_cross_compiling
           env:
             DEBIAN_FRONTEND: noninteractive
-            TDLIB_VERSION: ${{env.TDLIB_VERSION}}
-            TMD_TARGETS: ${{env.TARGETS}}
 
       - name: Prepare Cross-Compilation toolschains
         run: |
-            apt update && apt install -y jq
+            TMD_TARGETS=${{TARGETS}}
             for qtarget in ${TMD_TARGETS//,/ }; do
               target=$(sed -e 's/^"//' -e 's/"$//' <<<"$qtarget")
               docker run --rm dockcross/${target} > /usr/local/bin/dockcross-${target}
               chmod +x /usr/local/bin/dockcross-${target}
               /usr/local/bin/dockcross-${target} -a "-v ${{ github.workspace }}/tdlib:/usr/src/tdlib/td -v ${{ github.workspace }}/tdlib/${target}:/opt/tdlib/${target}" bash -c "cd /usr/src/tdlib/td/build-${target} && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/opt/tdlib/${target} .. && cmake --build . --target install"
             done
-        env:
-          TMD_TARGETS: ${{env.TARGETS}}
 
