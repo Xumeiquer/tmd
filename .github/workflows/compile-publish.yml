@@ -7,8 +7,8 @@ on:
 
 env:
   TARGETS: 
-    "windows-static-x64"
-    "linux-x64-clang"
+    - "windows-static-x64"
+    - "linux-x64-clang"
   TDLIB_VERSION: v1.8.0
 
 jobs:
