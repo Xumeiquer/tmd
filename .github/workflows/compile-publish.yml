@@ -6,7 +6,7 @@ on:
       - 'main'
 
 env:
-  TARGETS: "['windows-static-x64','linux-x64-clang']"
+  TARGETS: '["windows-static-x64","linux-x64-clang"]'
   TDLIB_VERSION: v1.8.0
 
 jobs:
@@ -40,6 +40,7 @@ jobs:
               cmake --build . --target prepare_cross_compiling
           env:
             DEBIAN_FRONTEND=noninteractive
+            TDLIB_VERSION=${{env.TDLIB_VERSION}}
             TMD_TARGETS=${{env.TARGETS}}
 
       - name: Prepare Cross-Compilation toolschains
