@@ -33,7 +33,7 @@ jobs:
               mkdir -p /usr/src/tdlib/td/build-native
               for qtarget in ${${{env.TARGETS}}//,/ }; do
                 target=$(echo "$qtarget" | sed -e 's/^"//' -e 's/"$//')
-                echo $target
+                echo "$target"
                 mkdir -p /usr/src/tdlib/td/build-${target}
                 chmod 777 /usr/src/tdlib/td/build-${target}
               done
