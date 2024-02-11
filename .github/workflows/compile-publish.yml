@@ -24,7 +24,7 @@ jobs:
           options: -v ${{ github.workspace }}/tdlib:/usr/src/tdlib
           run: | 
               apt update
-              apt install -y make git zlib1g-dev libssl-dev gperf php-cli cmake g++
+              apt install -y make git zlib1g-dev libssl-dev gperf php-cli cmake g++ jq
               mkdir -p /usr/src/tdlib/
               git clone https://github.com/tdlib/td.git /usr/src/tdlib/td
               cd /usr/src/tdlib/td
@@ -44,6 +44,7 @@ jobs:
 
       - name: Prepare Cross-Compilation toolschains
         run: |
+            apt update && apt install -y jq
             TMD_TARGETS=$(echo "$TMD_TARGETS" | jq -r '.[]')
             for target in "${TMD_TARGETS[@]}"; do
               docker run --rm dockcross/${target} > /usr/local/bin/dockcross-${target}
