@@ -21,6 +21,7 @@ jobs:
         run: |
           echo $(pwd)
           echo ${{ github.workspace }}
+          ls -la ${{ github.workspace }}
           chmod +x .github/scripts/prepare-tdlib.sh
 
       - name: Prepare TDLIB for Cross-Copilation
