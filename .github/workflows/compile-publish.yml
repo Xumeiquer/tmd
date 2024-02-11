@@ -23,7 +23,7 @@ jobs:
           image: debian:latest
           options: -v ${{ github.workspace }}/tdlib:/usr/src/tdlib
           shell: bash
-          run: bash .github/scripts/prepare-tdlib.sh
+          run: bash ${{ github.workspace }}/.github/scripts/prepare-tdlib.sh
 
       - name: Prepare Cross-Compilation toolschains
         run: |
