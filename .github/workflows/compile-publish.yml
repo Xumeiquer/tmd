@@ -46,7 +46,7 @@ jobs:
       - name: Prepare Cross-Compilation toolschains
         run: |
             apt update && apt install -y jq
-            TMD_TARGETS=($(echo "$TMD_TARGETS" | jq -r '.[]'))
+            TMD_TARGETS=($(echo "$TMD_TARGETS" | jq -r '.[]') )
             for target in "${TMD_TARGETS[@]}"; do
               docker run --rm dockcross/${target} > /usr/local/bin/dockcross-${target}
               chmod +x /usr/local/bin/dockcross-${target}
