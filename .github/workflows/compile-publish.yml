@@ -22,7 +22,8 @@ jobs:
         with:
           image: debian:latest
           options: -v ${{ github.workspace }}/tdlib:/usr/src/tdlib
-          run: | 
+          run: |
+              set -x
               apt update
               apt install -y make git zlib1g-dev libssl-dev gperf php-cli cmake g++
               mkdir -p /usr/src/tdlib/
