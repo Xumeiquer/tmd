@@ -34,7 +34,6 @@ jobs:
               OLDIFS="$IFS"
               IFS=';'
               for target in $TMD_TARGETS; do
-                echo ${target}
                 mkdir -p /usr/src/tdlib/td/build-${target}
                 chmod 777 /usr/src/tdlib/td/build-${target}
               done
@@ -45,11 +44,12 @@ jobs:
 
       - name: Prepare Cross-Compilation toolschains
         run: |
-            TMD_TARGETS=($(echo ${{env.TARGETS}} | tr ";" "\n"))
-            for qtarget in "${TMD_TARGETS[@]}"; do
-              target=$(echo "$qtarget" | sed -e 's/^"//' -e 's/"$//')
+            OLDIFS="$IFS"
+            IFS=';
+            for target in $TMD_TARGETS; do
               docker run --rm dockcross/${target} > /usr/local/bin/dockcross-${target}
               chmod +x /usr/local/bin/dockcross-${target}
-              /usr/local/bin/dockcross-${target} -a "-v ${{ github.workspace }}/tdlib:/usr/src/tdlib/td -v ${{ github.workspace }}/tdlib/${target}:/opt/tdlib/${target}" bash -c "cd /usr/src/tdlib/td/build-${target} && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/opt/tdlib/${target} .. && cmake --build . --target install"
+              /usr/local/bin/dockcross-${target} -a "-v ${{ github.workspace }}/tdlib:/usr/src/tdlib/td -v ${{ github.workspace }}/tdlib/build-${target}:/opt/tdlib/${target}" bash -c "cd /usr/src/tdlib/td/build-${target} && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/opt/tdlib/${target} .. && cmake --build . --target install"
             done
+            IFS="$OLDIFS"
 
