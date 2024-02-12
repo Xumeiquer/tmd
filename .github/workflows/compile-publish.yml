@@ -44,7 +44,7 @@ jobs:
 
       - name: Prepare and cross-compile TDLIB (2/2)
         run: |
-          declare -a TMD_TARGETS=($(echo ${{env.TARGETS}} | tr ';' '\n'))
+          TMD_TARGETS=($(echo "${{env.TARGETS}}" | tr ';' ' '))
           for target in ${TMD_TARGETS[@]}; do
             echo "Building TDLIB for ${target}..."
             docker run --rm dockcross/${target} > /usr/local/bin/dockcross-${target}
