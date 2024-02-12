@@ -55,4 +55,4 @@ jobs:
       
       - name: Compile TMD
         run: |
-          ls -lar ${{ github.workspace }}/tdlib/*
+          ls -laR ${{ github.workspace }}/tdlib/build-*
