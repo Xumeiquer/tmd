@@ -31,6 +31,7 @@ jobs:
               cd /usr/src/tdlib/td
               git checkout $TDLIB_CHECKOUT_VERSION
               mkdir -p /usr/src/tdlib/td/build-native
+              echo "$TMD_TARGETS"
               for target in "${TMD_TARGETS[@]}"; do
                 echo ${target}
                 mkdir -p /usr/src/tdlib/td/build-${target}
