@@ -46,7 +46,7 @@ jobs:
         run: |
           OLDIFS="$IFS"
           IFS=';'
-          for target in ${$${{env.TARGETS}}//;/\n}; do
+          for target in ${${{env.TARGETS}}//;/\n}; do
             echo "Building TDLIB for ${target}..."
             docker run --rm dockcross/${target} > /usr/local/bin/dockcross-${target}
             chmod +x /usr/local/bin/dockcross-${target}
