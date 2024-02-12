@@ -46,7 +46,7 @@ jobs:
         run: |
           OLDIFS="$IFS"
           IFS=';'
-          for target in $TMD_TARGETS; do
+          for target in ${{env.TARGETS}}; do
             echo "Building TDLIB for ${target}..."
             docker run --rm dockcross/${target} > /usr/local/bin/dockcross-${target}
             chmod +x /usr/local/bin/dockcross-${target}
@@ -54,6 +54,6 @@ jobs:
           done
           IFS="$OLDIFS"
       
-      - name: Compile TMD
-        run: |
-          ls -laR ${{ github.workspace }}/tdlib/*
+      # - name: Compile TMD
+      #   run: |
+      #     ls -laR ${{ github.workspace }}/tdlib/*
