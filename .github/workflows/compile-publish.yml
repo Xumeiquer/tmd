@@ -49,7 +49,7 @@ jobs:
           for target in $TMD_TARGETS; do
             docker run --rm dockcross/${target} > /usr/local/bin/dockcross-${target}
             chmod +x /usr/local/bin/dockcross-${target}
-            /usr/local/bin/dockcross-${target} -a "-v ${{ github.workspace }}/tdlib:/usr/src/tdlib/td -v ${{ github.workspace }}/tdlib/build-${target}:/opt/tdlib/${target}" bash -c "cd /usr/src/tdlib/td/build-${target} && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/opt/tdlib/${target} .. && cmake --build . --target install"
+            /usr/local/bin/dockcross-${target} -a "-v ${{ github.workspace }}/tdlib:/usr/src/tdlib/td -v ${{ github.workspace }}/tdlib/build-${target}:/opt/tdlib/${target}" bash -c "ls -la /opt/tdlib/ && ls /usr/src/tdlib/td/build-${target} && cd /usr/src/tdlib/td/build-${target} && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/opt/tdlib/${target} .. && cmake --build . --target install"
           done
           IFS="$OLDIFS"
       
