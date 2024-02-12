@@ -31,11 +31,14 @@ jobs:
               cd /usr/src/tdlib/td
               git checkout $TDLIB_CHECKOUT_VERSION
               mkdir -p /usr/src/tdlib/td/build-native
-              for target in $(echo $TMD_TARGETS | tr \; \\n); do
+              OLDIFS="$IFS"
+              IFS=';'
+              for target in $TMD_TARGETS; do
                 echo ${target}
                 mkdir -p /usr/src/tdlib/td/build-${target}
                 chmod 777 /usr/src/tdlib/td/build-${target}
               done
+              IFS="$OLDIFS"
               cd /usr/src/tdlib/td/build-native
               cmake -DCMAKE_BUILD_TYPE=Release ..
               cmake --build . --target prepare_cross_compiling
