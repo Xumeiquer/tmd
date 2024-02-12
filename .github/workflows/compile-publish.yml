@@ -6,7 +6,7 @@ on:
       - 'main'
 
 env:
-  TARGETS: "windows-static-x64;linux-x64-clang"
+  TARGETS: '["windows-static-x64","linux-x64-clang"]'
   TDLIB_VERSION: v1.8.0
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: debian:latest
-          options: -v ${{ github.workspace }}/tdlib:/usr/src/tdlib -e TARGETS=${{env.TARGETS}} -e TDLIB_CHECKOUT_VERSION=${{env.TDLIB_VERSION}}
+          options: -v ${{ github.workspace }}/tdlib:/usr/src/tdlib -e TMD_TARGETS=${{fromJSON(env.TARGETS)}} -e TDLIB_CHECKOUT_VERSION=${{env.TDLIB_VERSION}}
           run: |
               set -x
               apt update
@@ -31,10 +31,7 @@ jobs:
               cd /usr/src/tdlib/td
               git checkout $TDLIB_CHECKOUT_VERSION
               mkdir -p /usr/src/tdlib/td/build-native
-              TMD_TARGETS=($(echo $TARGETS | tr ";" "\n"))
-              for qtarget in "${TMD_TARGETS[@]}"; do
-                target=$(echo "$qtarget" | sed -e 's/^"//' -e 's/"$//')
-                echo "$target"
+              for target in "${TMD_TARGETS[@]}"; do
                 mkdir -p /usr/src/tdlib/td/build-${target}
                 chmod 777 /usr/src/tdlib/td/build-${target}
               done
