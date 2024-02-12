@@ -45,7 +45,7 @@ jobs:
       - name: Prepare Cross-Compilation toolschains
         run: |
             OLDIFS="$IFS"
-            IFS=';
+            IFS=';'
             for target in $TMD_TARGETS; do
               docker run --rm dockcross/${target} > /usr/local/bin/dockcross-${target}
               chmod +x /usr/local/bin/dockcross-${target}
