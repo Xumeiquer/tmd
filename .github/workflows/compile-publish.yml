@@ -17,39 +17,42 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Prepare TDLIB for Cross-Copilation
+      - name: Prepare and cross-compile TDLIB (1/2)
         uses: addnab/docker-run-action@v3
         with:
           image: debian:latest
           options: -v ${{ github.workspace }}/tdlib:/usr/src/tdlib -e TMD_TARGETS=${{env.TARGETS}} -e TDLIB_CHECKOUT_VERSION=${{env.TDLIB_VERSION}}
           run: |
-              set -x
-              apt update
-              DEBIAN_FRONTEND=noninteractive apt install -y make git zlib1g-dev libssl-dev gperf php-cli cmake g++
-              mkdir -p /usr/src/tdlib/
-              git clone https://github.com/tdlib/td.git /usr/src/tdlib/td
-              cd /usr/src/tdlib/td
-              git checkout $TDLIB_CHECKOUT_VERSION
-              mkdir -p /usr/src/tdlib/td/build-native
-              OLDIFS="$IFS"
-              IFS=';'
-              for target in $TMD_TARGETS; do
-                mkdir -p /usr/src/tdlib/td/build-${target}
-                chmod 777 /usr/src/tdlib/td/build-${target}
-              done
-              IFS="$OLDIFS"
-              cd /usr/src/tdlib/td/build-native
-              cmake -DCMAKE_BUILD_TYPE=Release ..
-              cmake --build . --target prepare_cross_compiling
-
-      - name: Prepare Cross-Compilation toolschains
-        run: |
+            set -x
+            apt update
+            DEBIAN_FRONTEND=noninteractive apt install -y make git zlib1g-dev libssl-dev gperf php-cli cmake g++
+            mkdir -p /usr/src/tdlib/
+            git clone https://github.com/tdlib/td.git /usr/src/tdlib/td
+            cd /usr/src/tdlib/td
+            git checkout $TDLIB_CHECKOUT_VERSION
+            mkdir -p /usr/src/tdlib/td/build-native
             OLDIFS="$IFS"
             IFS=';'
             for target in $TMD_TARGETS; do
-              docker run --rm dockcross/${target} > /usr/local/bin/dockcross-${target}
-              chmod +x /usr/local/bin/dockcross-${target}
-              /usr/local/bin/dockcross-${target} -a "-v ${{ github.workspace }}/tdlib:/usr/src/tdlib/td -v ${{ github.workspace }}/tdlib/build-${target}:/opt/tdlib/${target}" bash -c "cd /usr/src/tdlib/td/build-${target} && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/opt/tdlib/${target} .. && cmake --build . --target install"
+              mkdir -p /usr/src/tdlib/td/build-${target}
+              chmod 777 /usr/src/tdlib/td/build-${target}
             done
             IFS="$OLDIFS"
+            cd /usr/src/tdlib/td/build-native
+            cmake -DCMAKE_BUILD_TYPE=Release ..
+            cmake --build . --target prepare_cross_compiling
 
+      - name: Prepare and cross-compile TDLIB (2/2)
+        run: |
+          OLDIFS="$IFS"
+          IFS=';'
+          for target in $TMD_TARGETS; do
+            docker run --rm dockcross/${target} > /usr/local/bin/dockcross-${target}
+            chmod +x /usr/local/bin/dockcross-${target}
+            /usr/local/bin/dockcross-${target} -a "-v ${{ github.workspace }}/tdlib:/usr/src/tdlib/td -v ${{ github.workspace }}/tdlib/build-${target}:/opt/tdlib/${target}" bash -c "cd /usr/src/tdlib/td/build-${target} && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/opt/tdlib/${target} .. && cmake --build . --target install"
+          done
+          IFS="$OLDIFS"
+      
+      - name: Compile TMD
+        run: |
+          ls -lar ${{ github.workspace }}/tdlib/*
