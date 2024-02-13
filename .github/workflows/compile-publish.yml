@@ -49,9 +49,9 @@ jobs:
             echo "Building TDLIB for ${target}..."
             docker run --rm dockcross/${target} > /usr/local/bin/dockcross-${target}
             chmod +x /usr/local/bin/dockcross-${target}
-            /usr/local/bin/dockcross-${target} -a "-v ${{ github.workspace }}/tdlib:/usr/src/tdlib/" bash -c "mkdir -p /opt/tdlib/${target} && cd /usr/src/tdlib/td/build-${target} && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/opt/tdlib/${target} .. && cmake --build . --target install && ls -la /opt/tdlib/${target}"
+            /usr/local/bin/dockcross-${target} -a "-v ${{ github.workspace }}/tdlib:/usr/src/tdlib/" bash -c "apt update && apt install -y zlib1g-dev libssl-dev && mkdir -p /opt/tdlib/${target} && cd /usr/src/tdlib/td/build-${target} && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/opt/tdlib/${target} .. && cmake --build . --target install && ls -la /opt/tdlib/${target}"
           done
       
-      # - name: Compile TMD
-      #   run: |
-      #     ls -laR ${{ github.workspace }}/tdlib/*
+      - name: Compile TMD
+        run: |
+          ls -laR ${{ github.workspace }}/tdlib/*
