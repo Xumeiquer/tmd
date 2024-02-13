@@ -52,16 +52,17 @@ jobs:
             docker run --rm dockcross/${target} > /usr/local/bin/dockcross-${target}
             chmod +x /usr/local/bin/dockcross-${target}
             /usr/local/bin/dockcross-${target} -a "-v ${{ github.workspace }}/tdlib:/usr/src/tdlib/ -v ${{ github.workspace }}/lib/${target}:/opt/tdlib/${target}" bash -c "\
+              git config --global --add safe.directory /usr/src/tdlib/td && \
               mkdir -p /opt/tdlib/${target} && \
               cd /usr/src/tdlib/td/build-${target} && \
-              case "$target" in
-              *windows*)
-                cmake -DCMAKE_BUILD_TYPE=Release -DOPENSSL_CRYPTO_LIBRARY=/usr/x86_64-w64-mingw32/lib/libz.dll.a -DOPENSSL_INCLUDE_DIR=/usr/x86_64-w64-mingw32/include/ -DCMAKE_INSTALL_PREFIX:PATH=/opt/tdlib/${target} .. && \
-                ;;
-              *linux*)
-                cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/opt/tdlib/${target} .. && \
-                ;;
-              esac
+              case "$target" in \
+              *windows*) \
+                cmake -DCMAKE_BUILD_TYPE=Release -DOPENSSL_CRYPTO_LIBRARY=/usr/x86_64-w64-mingw32/lib/libz.dll.a -DOPENSSL_INCLUDE_DIR=/usr/x86_64-w64-mingw32/include/ -DZLIB_LIBRARY=/usr/x86_64-w64-mingw32/lib/libz.dll.a -DZLIB_INCLUDE_DIR=/usr/x86_64-w64-mingw32/include/ -DCMAKE_INSTALL_PREFIX:PATH=/opt/tdlib/${target} .. \
+                ;;  \
+              *linux*)  \
+                cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/opt/tdlib/${target} .. \
+                ;; \
+              esac && \
               cmake --build . --target install && \
               ls -la /opt/tdlib/${target}"
           done
