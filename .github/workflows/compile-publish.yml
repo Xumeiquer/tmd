@@ -8,6 +8,7 @@ on:
 env:
   TARGETS: 'windows-static-x64;linux-x64-clang'
   TDLIB_VERSION: v1.8.0
+  GO_VERSION: 1.22.0
 
 jobs:
   compile:
@@ -47,11 +48,16 @@ jobs:
           TMD_TARGETS=($(echo "${{env.TARGETS}}" | tr ';' ' '))
           for target in ${TMD_TARGETS[@]}; do
             echo "Building TDLIB for ${target}..."
+            mkdir -p ${{ github.workspace }}/lib/${target}
             docker run --rm dockcross/${target} > /usr/local/bin/dockcross-${target}
             chmod +x /usr/local/bin/dockcross-${target}
-            /usr/local/bin/dockcross-${target} -a "-v ${{ github.workspace }}/tdlib:/usr/src/tdlib/" bash -c "apt update && apt install -y zlib1g-dev libssl-dev && mkdir -p /opt/tdlib/${target} && cd /usr/src/tdlib/td/build-${target} && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/opt/tdlib/${target} .. && cmake --build . --target install && ls -la /opt/tdlib/${target}"
+            /usr/local/bin/dockcross-${target} -a "-v ${{ github.workspace }}/tdlib:/usr/src/tdlib/ -v ${{ github.workspace }}/lib/${target}:/opt/tdlib/${target}" bash -c "apt update && apt install -y zlib1g-dev libssl-dev && mkdir -p /opt/tdlib/${target} && cd /usr/src/tdlib/td/build-${target} && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/opt/tdlib/${target} .. && cmake --build . --target install && ls -la /opt/tdlib/${target}"
           done
       
       - name: Compile TMD
         run: |
-          ls -laR ${{ github.workspace }}/tdlib/*
+          TMD_TARGETS=($(echo "${{env.TARGETS}}" | tr ';' ' '))
+          for target in ${TMD_TARGETS[@]}; do
+            /usr/local/bin/dockcross-${target} -a "- ${{ github.workspace }}:/src/tmd" bash -c "wget -c https://go.dev/dl/go${{ env.GO_VERSION }}.linux-amd64.tar.gz -O - | tar -xz -C /usr/local && export PATH=$PATH:/usr/local/go/bin && apt update && apt install zlib1g-dev libssl-dev && find /usr -name '*.a' && find ${{ github.workspace }} -name '*.a'"
+          done
+          
