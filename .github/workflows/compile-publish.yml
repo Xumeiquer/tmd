@@ -57,7 +57,7 @@ jobs:
               cd /usr/src/tdlib/td/build-${target} && \
               case "$target" in \
               *windows*) \
-                cmake -DCMAKE_BUILD_TYPE=Release -DOPENSSL_CRYPTO_LIBRARY=/usr/x86_64-w64-mingw32/lib/libz.dll.a -DOPENSSL_INCLUDE_DIR=/usr/x86_64-w64-mingw32/include/ -DZLIB_LIBRARY=/usr/x86_64-w64-mingw32/lib/libz.dll.a -DZLIB_INCLUDE_DIR=/usr/x86_64-w64-mingw32/include -DOPENSSL_CRYPTO_LIBRARY=/usr/local/ssl/lib/libcrypto.a -DCMAKE_INSTALL_PREFIX:PATH=/opt/tdlib/${target} .. \
+                cmake -DCMAKE_BUILD_TYPE=Release -DOPENSSL_ROOT_DIR=/usr/local/ssl -DZLIB_LIBRARY=/usr/x86_64-w64-mingw32/lib/libz.dll.a -DZLIB_INCLUDE_DIR=/usr/x86_64-w64-mingw32/include -DCMAKE_INSTALL_PREFIX:PATH=/opt/tdlib/${target} .. \
                 ;;  \
               *linux*)  \
                 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/opt/tdlib/${target} .. \
