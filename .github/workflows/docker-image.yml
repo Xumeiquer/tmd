@@ -1,0 +1,36 @@
+name: Build TMD Docker image
+
+on:
+  push:
+    branches:
+      - 'main'
+
+env:
+  TDLIB_VERSION: v1.8.0
+
+jobs:
+  compile:
+    name: Compile TMD
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Compile TDLIB
+        run: |
+          apt-get update
+          apt-get upgrade
+          apt-get install make git zlib1g-dev libssl-dev gperf php-cli cmake clang-14 libc++-dev libc++abi-dev
+          git clone https://github.com/tdlib/td.git /usr/src/tdlib/td
+          cd /usr/src/tdlib/td
+          rm -rf build
+          mkdir build
+          cd build
+          CXXFLAGS="-stdlib=libc++" CC=/usr/bin/clang-14 CXX=/usr/bin/clang++-14 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr/local ..
+          cmake --build . --target install
+          cd ..
+          cd ..
+          ls -l /usr/local
+      
+      
+
