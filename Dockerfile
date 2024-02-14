@@ -60,6 +60,7 @@ WORKDIR /usr/src/tmd
 COPY . /usr/src/tmd
 RUN go mod tidy
 
+ENV PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/lib/pkgconfig:/usr/local/lib/pkgconfig
 RUN bash build.sh
 
 # Final image
