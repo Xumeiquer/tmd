@@ -18,9 +18,9 @@ jobs:
       
       - name: Compile TDLIB
         run: |
-          apt-get update
-          apt-get upgrade
-          apt-get install make git zlib1g-dev libssl-dev gperf php-cli cmake clang-14 libc++-dev libc++abi-dev
+          sudo apt-get update
+          sudo apt-get upgrade
+          sudo apt-get install make git zlib1g-dev libssl-dev gperf php-cli cmake clang-14 libc++-dev libc++abi-dev
           git clone https://github.com/tdlib/td.git /usr/src/tdlib/td
           cd /usr/src/tdlib/td
           rm -rf build
