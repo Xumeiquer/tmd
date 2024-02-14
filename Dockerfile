@@ -11,7 +11,7 @@ RUN apk update && apk upgrade && apk add --no-cache \
         linux-headers \
         alpine-sdk \
         openssl-dev \
-        zlib-static\ 
+        zlib-static \ 
         musl-dev \
         zlib-dev \
         cmake \
@@ -26,6 +26,11 @@ RUN git clone https://github.com/tdlib/td.git /usr/src/tdlib/td && ls -la /usr/s
     cd build && \
     cmake -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_INSTALL_PREFIX:PATH=/usr/local \
+        -DOPENSSL_INCLUDE_DIR=/usr/include/openssl \
+        -DOPENSSL_SSL_LIBRARY=/usr/lib/libssl.a \
+        -DOPENSSL_CRYPTO_LIBRARY=/usr/lib/libcrypto.a \
+        -DZLIB_USE_STATIC_LIBS=ON \
+        -DZLIB_INCLUDE_DIR=/usr/include \
         -DCMAKE_FIND_LIBRARY_SUFFIXES=.a \
         -DBUILD_SHARED_LIBS=OFF \
         -DCMAKE_EXE_LINKER_FLAGS=-static .. && \
@@ -37,7 +42,8 @@ RUN git clone https://github.com/tdlib/td.git /usr/src/tdlib/td && ls -la /usr/s
 FROM golang:alpine AS golang
 
 COPY --from=tdlib /usr/local/include/td /usr/local/include/td
-COPY --from=tdlib /usr/local/lib/libtd* /usr/local/lib/
+COPY --from=tdlib /usr/local/lib/libtd*.a /usr/local/lib/
+COPY --from=tdlib /usr/local/lib/pkgconfig/libtd*.pc /usr/local/lib/pkgconfig/
 
 RUN apk update && apk upgrade && apk add --no-cache \
     openssl-libs-static \
