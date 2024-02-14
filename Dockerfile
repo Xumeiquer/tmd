@@ -17,7 +17,7 @@ RUN apk update && apk upgrade && apk add --no-cache \
         gperf \
         git
 
-RUN git clone https://github.com/tdlib/td.git /usr/src/tdlib && \
+RUN git clone https://github.com/tdlib/td.git /usr/src/tdlib && ls -la /usr/src/tdlib && \
     cd /usr/src/tdlib/td && \
     rm -rf build && \
     git checkout $(git describe --tags "$(git rev-list --tags --max-count=1)") && \
