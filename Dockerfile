@@ -17,8 +17,8 @@ RUN apk update && apk upgrade && apk add --no-cache \
         gperf \
         git
 
-RUN git clone https://github.com/tdlib/td.git . && \
-    cd td && \
+RUN git clone https://github.com/tdlib/td.git /usr/src/tdlib && \
+    cd /usr/src/tdlib/td && \
     rm -rf build && \
     git checkout $(git describe --tags "$(git rev-list --tags --max-count=1)") && \
     mkdir build && \
@@ -27,8 +27,7 @@ RUN git clone https://github.com/tdlib/td.git . && \
         -DCMAKE_INSTALL_PREFIX:PATH=/usr/local \
         -DCMAKE_FIND_LIBRARY_SUFFIXES=".a" \
         -DBUILD_SHARED_LIBS=OFF \
-        -DCMAKE_EXE_LINKER_FLAGS="-static" \
-        .. && \
+        -DCMAKE_EXE_LINKER_FLAGS="-static" .. && \
     cmake --build . --target install && \
     cd ../.. && \
     ls -l /usr/local
