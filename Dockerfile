@@ -12,6 +12,7 @@ RUN apk update && apk upgrade && apk add --no-cache \
         alpine-sdk \
         openssl-dev \
         zlib-static\ 
+        musl-dev \
         zlib-dev \
         cmake \
         gperf \
@@ -25,9 +26,9 @@ RUN git clone https://github.com/tdlib/td.git /usr/src/tdlib/td && ls -la /usr/s
     cd build && \
     cmake -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_INSTALL_PREFIX:PATH=/usr/local \
-        -DCMAKE_FIND_LIBRARY_SUFFIXES=".a" \
+        -DCMAKE_FIND_LIBRARY_SUFFIXES=.a \
         -DBUILD_SHARED_LIBS=OFF \
-        -DCMAKE_EXE_LINKER_FLAGS="-static" .. && \
+        -DCMAKE_EXE_LINKER_FLAGS=-static .. && \
     cmake --build . --target install && \
     cd ../.. && \
     ls -l /usr/local
