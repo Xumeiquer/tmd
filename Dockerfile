@@ -41,6 +41,7 @@ RUN git clone https://github.com/tdlib/td.git /usr/src/tdlib/td && ls -la /usr/s
 # Build Telegram Media Downloader
 FROM golang:alpine AS golang
 
+RUN mkdir -p /usr/local/lib/pkgconfig/
 COPY --from=tdlib /usr/local/include/td /usr/local/include/td
 COPY --from=tdlib /usr/local/lib/libtd*.a /usr/local/lib/
 COPY --from=tdlib /usr/local/lib/pkgconfig/libtd*.pc /usr/local/lib/pkgconfig/
@@ -48,8 +49,9 @@ COPY --from=tdlib /usr/local/lib/pkgconfig/libtd*.pc /usr/local/lib/pkgconfig/
 RUN apk update && apk upgrade && apk add --no-cache \
     openssl-libs-static \
     build-base \
-    zlib-static\ 
+    zlib-static \
     pkgconfig \
+    musl-dev \
     bash \
     git 
 
@@ -60,7 +62,9 @@ WORKDIR /usr/src/tmd
 COPY . /usr/src/tmd
 RUN go mod tidy
 
-ENV PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/lib/pkgconfig:/usr/local/lib/pkgconfig
+ENV PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/usr/lib/pkgconfig:/usr/local/lib/pkgconfig"
+ENV CGO_CFLAGS="-I/usr/local/include/td/telegram/ -I/usr/local/include/td/tl"
+ENV CGO_LDFLAGS="-L/lib -L/usr/lib -L/usr/local/lib -ltdjson -ldl -lm  -lstdc++ -lz"
 RUN bash build.sh
 
 # Final image

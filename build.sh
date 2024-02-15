@@ -12,15 +12,15 @@ OUTPUT="tmd"
 
 # STEP 2: Build the ldflags
 
-CFLAGS=$(pkg-config --cflags openssl tdclient tdcore tdactor tddb tdsqlite tdnet tdutils tdjson_static tdjson_private)
-LIBS=$(pkg-config --libs openssl tdclient tdcore tdactor tddb tdsqlite tdnet tdutils tdjson_static tdjson_private)
+# CFLAGS=$(pkg-config --cflags openssl tdclient tdcore tdactor tddb tdsqlite tdnet tdutils tdjson_static tdjson_private)
+# LIBS=$(pkg-config --libs openssl tdclient tdcore tdactor tddb tdsqlite tdnet tdutils tdjson_static tdjson_private)
 
 LDFLAGS=(
   "-s -w"
   "-X '${PACKAGE}/cmd.Version=${VERSION:-v0.0.0-dev}'"
   "-X '${PACKAGE}/cmd.CommitHash=${COMMIT_HASH:-000000}'"
   "-X '${PACKAGE}/cmd.BuildTime=${BUILD_TIMESTAMP}'"
-  "-extldflags '-static $LIBS $CFLAGS -ldl -lm  -lstdc++ -lz'"
+  "-extldflags '-static -ldl -lm  -lstdc++ -lz'"
 )
 
 # STEP 3: Actual Go build process
