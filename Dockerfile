@@ -42,6 +42,7 @@ RUN git clone https://github.com/tdlib/td.git /usr/src/tdlib/td && ls -la /usr/s
 FROM golang:alpine AS golang
 
 RUN mkdir -p /usr/local/lib/pkgconfig/
+
 COPY --from=tdlib /usr/local/include/td /usr/local/include/td
 COPY --from=tdlib /usr/local/lib/libtd*.a /usr/local/lib/
 COPY --from=tdlib /usr/local/lib/pkgconfig/libtd*.pc /usr/local/lib/pkgconfig/
