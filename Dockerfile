@@ -65,7 +65,7 @@ RUN go mod tidy
 
 ENV PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/usr/lib/pkgconfig:/usr/local/lib/pkgconfig"
 ENV CGO_CFLAGS="-I/usr/local/include/td/telegram/ -I/usr/local/include/td/tl"
-ENV CGO_LDFLAGS="-L/lib -L/usr/lib -L/usr/local/lib -ltdjson -ldl -lm  -lstdc++ -lz"
+ENV CGO_LDFLAGS="-L/lib -L/usr/lib -L/usr/local/lib -ltdjson_static -ldl -lm  -lstdc++ -lz"
 RUN bash build.sh
 
 # Final image
