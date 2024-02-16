@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -x
+
 # STEP 1: Determinate the required values
 
 PACKAGE="github.com/Xumeiquer/tmd"
