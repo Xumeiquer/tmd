@@ -11,7 +11,7 @@ RUN apk update && apk upgrade && apk add --no-cache \
         linux-headers \
         alpine-sdk \
         openssl-dev \
-        zlib-static \ 
+        zlib-static \
         musl-dev \
         zlib-dev \
         cmake \
@@ -21,7 +21,6 @@ RUN apk update && apk upgrade && apk add --no-cache \
 RUN git clone https://github.com/tdlib/td.git /usr/src/tdlib/td && ls -la /usr/src/tdlib && \
     cd /usr/src/tdlib/td && \
     rm -rf build && \
-    git checkout $(git describe --tags "$(git rev-list --tags --max-count=1)") && \
     mkdir build && \
     cd build && \
     cmake -DCMAKE_BUILD_TYPE=Release \

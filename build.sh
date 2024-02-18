@@ -14,9 +14,6 @@ OUTPUT="tmd"
 
 # STEP 2: Build the ldflags
 
-# CFLAGS=$(pkg-config --cflags openssl tdclient tdcore tdactor tddb tdsqlite tdnet tdutils tdjson_static tdjson_private)
-# LIBS=$(pkg-config --libs openssl tdclient tdcore tdactor tddb tdsqlite tdnet tdutils tdjson_static tdjson_private)
-
 LDFLAGS=(
   "-s -w"
   "-X '${PACKAGE}/cmd.Version=${VERSION:-v0.0.0-dev}'"

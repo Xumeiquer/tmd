@@ -121,6 +121,7 @@ $RECYCLE.BIN/
 
 ## Custom ignores
 .tdlib/
+build/
 media/
 dist/
 
