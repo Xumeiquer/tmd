@@ -1,0 +1,168 @@
+# CircleCI configuration file
+
+version: 2.1
+
+commands:
+  compile-tdlib-for-linux:
+    steps:
+      - run: |
+        apt-get update
+        apt-get upgrade
+        apt-get install make git zlib1g-dev libssl-dev gperf php-cli cmake clang-14 libc++-dev libc++abi-dev
+        git clone https://github.com/tdlib/td.git
+        cd td
+        rm -rf build
+        mkdir build
+        cd build
+        CXXFLAGS="-stdlib=libc++" CC=/usr/bin/clang-14 CXX=/usr/bin/clang++-14 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr/local ..
+        cmake --build . --target install
+        cd ..
+        cd ..
+        ls -l /usr/local
+
+  compile-tdlib-for-windows:
+    steps:
+      - run: |
+        git clone https://github.com/tdlib/td.git
+        cd td
+        git clone https://github.com/Microsoft/vcpkg.git
+        cd vcpkg
+        git checkout cd5e746ec203c8c3c61647e0886a8df8c1e78e41
+        ./bootstrap-vcpkg.bat
+        ./vcpkg.exe install gperf:x86-windows openssl:x86-windows zlib:x86-windows
+        cd ..
+        Remove-Item build -Force -Recurse -ErrorAction SilentlyContinue
+        mkdir build
+        cd build
+        cmake -A Win32 -DCMAKE_INSTALL_PREFIX:PATH=../tdlib -DCMAKE_TOOLCHAIN_FILE:FILEPATH=../vcpkg/scripts/buildsystems/vcpkg.cmake ..
+        cmake --build . --target install --config Release
+        cd ..
+        cd ..
+        dir td/tdlib
+    
+  compile-tdlib-for-macos:
+    steps:
+      - run: |
+        xcode-select --install
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        brew install gperf cmake openssl
+        git clone https://github.com/tdlib/td.git
+        cd td
+        rm -rf build
+        mkdir build
+        cd build
+        cmake -DCMAKE_BUILD_TYPE=Release -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl/ -DCMAKE_INSTALL_PREFIX:PATH=/usr/local ..
+        cmake --build . --target install
+        cd ..
+        cd ..
+        ls -l /usr/local
+    
+    set-env-vars:
+      steps:
+        - run: |
+          PACKAGE="github.com/Xumeiquer/tmd"
+          VERSION=$(git describe --tags --always --abbrev=0 --match='v[0-9]*.[0-9]*.[0-9]*' 2> /dev/null | sed 's/^.//')
+          COMMIT_HASH=$(git rev-parse --short HEAD 2> /dev/null)
+          BUILD_TIMESTAMP=$(date '+%Y-%m-%dT%H:%M:%S')
+
+          SOURCE="main.go"
+          OUTPUT="tmd"
+
+          # STEP 2: Build the ldflags
+
+          LDFLAGS=(
+            "-s -w"
+            "-X '${PACKAGE}/cmd.Version=${VERSION:-v0.0.0-dev}'"
+            "-X '${PACKAGE}/cmd.CommitHash=${COMMIT_HASH:-000000}'"
+            "-X '${PACKAGE}/cmd.BuildTime=${BUILD_TIMESTAMP}'"
+            "-extldflags '-static -ldl -lm  -lstdc++ -lz'"
+          )
+
+          CGO_CFLAGS="-I/usr/local/include/td/telegram/ -I/usr/local/include/td/tl"
+          CGO_LDFLAGS="-L/lib -L/usr/lib -L/usr/local/lib -ltdjson_static -ldl -lm  -lstdc++ -lz"
+    
+    compile:
+      steps:
+        - run: |
+          echo "go build -ldflags=\"${LDFLAGS[*]}\" -trimpath -o build/$OUTPUT $SOURCE"
+          go build -ldflags="${LDFLAGS[*]}" -trimpath -o build/$OUTPUT $SOURCE
+
+    compile-tmd-for-linux:
+      steps:
+        - checkout
+        - set-env-vars
+        - compile
+
+    compile-tmd-for-windows:
+      steps:
+        - checkout
+        - set-env-vars
+        - compile
+
+    compile-tmd-for-macos:
+      steps:
+        - checkout
+        - set-env-vars
+        - compile
+
+
+executors:
+  linux-machine:
+    machine:
+      image: ubuntu-2204
+  
+  windows-machine:
+    machine:
+      image: windows-server-2019-vs2019
+  
+  macos-machine:
+    machine:
+      image: xcode
+  
+  docker-machine:
+    docker:
+      image: cimg/go
+  
+
+jobs:
+  build-for-linux:
+    executor: linux-machine
+    steps:
+      - compile-tdlib-for-linux
+      - compile-tmd-for-linux
+
+  build-for-windows:
+    executor: windows-machine
+    steps:
+      - compile-tdlib-for-windows
+      - compile-tmd-for-windows
+
+  build-for-macos:
+    executor: macos-machine
+    steps:
+      - compile-tdlib-for-macos
+      - compile-tmd-for-macos
+
+  build-for-docker:
+  executor: docker-machine
+    steps:
+      - compile-tdlib-for-linux
+      - compile-tmd-for-linux
+
+
+workflows:
+  build-for-linux:
+    jobs:
+      - build-for-linux
+
+  build-for-windows:
+    jobs:
+      - build-for-windows
+
+  build-for-macos:
+    jobs:
+      - build-for-macos
+
+  build-for-docker:
+    jobs:
+      - build-for-docker
